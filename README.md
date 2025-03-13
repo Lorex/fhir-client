@@ -2,7 +2,7 @@
 
 A TypeScript client library for interacting with FHIR (Fast Healthcare Interoperability Resources) servers. This library provides a simple and type-safe API for handling FHIR resources.
 
-[繁體中文說明](README_zh-TW.md)
+[繁體中文說明](https://github.com/Lorex/fhir-client/blob/master/README_zh-TW.md)
 
 ## Features
 

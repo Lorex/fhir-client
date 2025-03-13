@@ -1,6 +1,4 @@
-'use strict';
-
-var axios = require('axios');
+import axios from 'axios';
 
 class FHIRClient {
     constructor(config) {
@@ -58,5 +56,5 @@ class FHIRClient {
     }
 }
 
-exports.FHIRClient = FHIRClient;
-//# sourceMappingURL=index.js.map
+export { FHIRClient };
+//# sourceMappingURL=index.mjs.map
