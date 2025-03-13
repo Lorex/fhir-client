@@ -39,13 +39,21 @@ const client = new FHIRClient({
 #### Get Resource
 
 ```typescript
+// Get by ID
 const patient = await client.get('Patient', 'patient-id');
 
-const patientWithOrg = await client.get('Patient', 'patient-id', {
-  _include: 'patient.managingOrganization'
+// Get by parameters
+const patients = await client.get('Patient', {
+  name: 'John',
+  birthdate: '1970-01-01',
+  gender: 'male'
 });
 
-const patient = await client.get('Patient', { name: 'John' });
+// Get by ID with parameters
+const patientWithParams = await client.get('Patient', 'patient-id', {
+  _include: 'Patient:organization',
+  _elements: ['name', 'birthDate', 'gender']
+});
 ```
 
 #### Create Resource

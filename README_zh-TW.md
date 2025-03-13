@@ -37,16 +37,21 @@ const client = new FHIRClient({
 #### 取得 Resource
 
 ```typescript
-// 使用 ID 取得
+// 使用 ID 取得資料
 const patient = await client.get('Patient', 'patient-id');
 
-// 使用額外參數取得
-const patientWithOrg = await client.get('Patient', 'patient-id', {
-  _include: 'patient.managingOrganization'
+// 使用參數取得資料
+const patients = await client.get('Patient', {
+  name: 'John',
+  birthdate: '1970-01-01',
+  gender: 'male'
 });
 
-// 使用參數搜尋
-const patient = await client.get('Patient', { name: 'John' });
+// 使用 ID 和參數組合取得資料
+const patientWithParams = await client.get('Patient', 'patient-id', {
+  _include: 'Patient:organization',
+  _elements: ['name', 'birthDate', 'gender']
+});
 ```
 
 #### 建立 Resource
