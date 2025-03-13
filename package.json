@@ -1,16 +1,29 @@
 {
   "name": "fhir-client",
-  "packageManager": "yarn@4.5.2",
   "version": "1.0.0",
   "description": "A FHIR Client Library",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register 'test/**/*.ts'"
   },
   "keywords": [
     "fhir",
     "client"
   ],
   "author": "Lorex",
-  "license": "See LICENSE file"
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "axios": "^1.8.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.0",
+    "@types/fhir": "^0.0.41",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.10",
+    "chai": "^5.2.0",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
