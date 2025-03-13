@@ -1,6 +1,6 @@
 {
   "name": "@fhir-uck/fhir-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A TypeScript client library for interacting with FHIR servers",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
