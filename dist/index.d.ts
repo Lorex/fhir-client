@@ -17,10 +17,9 @@ export declare class FHIRClient {
     private version;
     constructor(config: FHIRClientConfig);
     getVersion(): FHIRVersion;
-    getResource<T extends FHIRResource>(resourceType: string, id: string): Promise<T>;
-    searchResources<T extends FHIRResource>(resourceType: string, params?: Record<string, string>): Promise<T[]>;
-    createResource<T extends FHIRResource>(resource: T): Promise<T>;
-    updateResource<T extends FHIRResource>(resource: T): Promise<T>;
-    deleteResource(resourceType: string, id: string): Promise<void>;
+    get<T extends FHIRResource>(resourceType: string, idOrParams?: string | Record<string, any>, params?: Record<string, any>): Promise<T | T[]>;
+    post<T extends FHIRResource>(resource: T): Promise<T>;
+    put<T extends FHIRResource>(resource: T): Promise<T>;
+    delete(resourceType: string, id: string): Promise<void>;
 }
 export {};

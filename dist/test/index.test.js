@@ -43,7 +43,7 @@ describe('FHIRClient', () => {
             birthDate: '1990-01-01'
         };
         it('應該能夠創建資源', async () => {
-            const patient = await client.createResource(testPatient);
+            const patient = await client.post(testPatient);
             console.log('創建的 Patient ID:', patient.id);
             (0, chai_1.expect)(patient.id).to.be.a('string');
             (0, chai_1.expect)(patient.resourceType).to.equal('Patient');
@@ -59,23 +59,32 @@ describe('FHIRClient', () => {
                 throw new Error('缺少資源 ID');
             }
             console.log('讀取 Patient ID:', createdPatientId);
-            const patient = await client.getResource('Patient', createdPatientId);
+            const patient = await client.get('Patient', createdPatientId);
             (0, chai_1.expect)(patient.id).to.equal(createdPatientId);
             (0, chai_1.expect)(patient.resourceType).to.equal('Patient');
             (0, chai_1.expect)(patient.name?.[0].given).to.deep.equal(['John']);
             (0, chai_1.expect)(patient.name?.[0].family).to.equal('Doe');
         });
-        it('應該能夠搜索資源', async () => {
+        it('應該能夠使用參數搜索資源', async () => {
             if (!createdPatientId) {
                 throw new Error('缺少資源 ID');
             }
             const searchParams = {
                 _id: createdPatientId
             };
-            const patients = await client.searchResources('Patient', searchParams);
+            const patients = await client.get('Patient', searchParams);
             (0, chai_1.expect)(patients).to.be.an('array');
             (0, chai_1.expect)(patients.length).to.be.greaterThan(0);
             (0, chai_1.expect)(patients[0].id).to.equal(createdPatientId);
+        });
+        it('應該能夠使用額外參數獲取資源', async () => {
+            if (!createdPatientId) {
+                throw new Error('缺少資源 ID');
+            }
+            const patient = await client.get('Patient', createdPatientId, {
+                _include: 'patient.managingOrganization'
+            });
+            (0, chai_1.expect)(patient.id).to.equal(createdPatientId);
         });
         it('應該能夠更新資源', async () => {
             if (!createdPatientId) {
@@ -92,7 +101,7 @@ describe('FHIRClient', () => {
                 ]
             };
             console.log('更新 Patient ID:', createdPatientId);
-            const patient = await client.updateResource(updatedPatient);
+            const patient = await client.put(updatedPatient);
             (0, chai_1.expect)(patient.id).to.equal(createdPatientId);
             (0, chai_1.expect)(patient.name?.[0].given).to.deep.equal(['John', 'William']);
             (0, chai_1.expect)(patient.name?.[0].family).to.equal('Doe');
@@ -102,9 +111,9 @@ describe('FHIRClient', () => {
                 throw new Error('缺少資源 ID');
             }
             console.log('刪除 Patient ID:', createdPatientId);
-            await client.deleteResource('Patient', createdPatientId);
+            await client.delete('Patient', createdPatientId);
             try {
-                await client.getResource('Patient', createdPatientId);
+                await client.get('Patient', createdPatientId);
                 throw new Error('資源應該已被刪除');
             }
             catch (error) {
@@ -116,8 +125,8 @@ describe('FHIRClient', () => {
         const client = new index_1.FHIRClient({ baseUrl, token });
         it('應該正確設置 token', async () => {
             try {
-                const patient = await client.getResource('Patient', '1');
-                (0, chai_1.expect)(patient).to.be.an('object');
+                const patient = await client.get('Patient', '1');
+                (0, chai_1.expect)(patient.id).to.equal('1');
             }
             catch (error) {
                 // 即使認證失敗，我們只關心請求是否正確發送

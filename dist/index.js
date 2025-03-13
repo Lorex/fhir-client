@@ -19,28 +19,32 @@ class FHIRClient {
     getVersion() {
         return this.version;
     }
-    async getResource(resourceType, id) {
-        const response = await this.client.get(`/${resourceType}/${id}`);
-        return response.data;
+    async get(resourceType, idOrParams, params) {
+        if (typeof idOrParams === 'string') {
+            const response = await this.client.get(`/${resourceType}/${idOrParams}`, {
+                params
+            });
+            return response.data;
+        }
+        else {
+            const response = await this.client.get(`/${resourceType}`, {
+                params: idOrParams
+            });
+            return response.data.entry.map(entry => entry.resource);
+        }
     }
-    async searchResources(resourceType, params) {
-        const response = await this.client.get(`/${resourceType}`, {
-            params,
-        });
-        return response.data.entry.map(entry => entry.resource);
-    }
-    async createResource(resource) {
+    async post(resource) {
         const response = await this.client.post(`/${resource.resourceType}`, resource);
         return response.data;
     }
-    async updateResource(resource) {
+    async put(resource) {
         if (!resource.id) {
             throw new Error('Resource must have an ID to be updated');
         }
         const response = await this.client.put(`/${resource.resourceType}/${resource.id}`, resource);
         return response.data;
     }
-    async deleteResource(resourceType, id) {
+    async delete(resourceType, id) {
         await this.client.delete(`/${resourceType}/${id}`);
     }
 }

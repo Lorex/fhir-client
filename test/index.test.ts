@@ -58,7 +58,7 @@ describe('FHIRClient', () => {
     };
 
     it('應該能夠創建資源', async () => {
-      const patient = await client.createResource<PatientResource>(testPatient);
+      const patient = await client.post<PatientResource>(testPatient);
       console.log('創建的 Patient ID:', patient.id);
       expect(patient.id).to.be.a('string');
       expect(patient.resourceType).to.equal('Patient');
@@ -76,26 +76,33 @@ describe('FHIRClient', () => {
         throw new Error('缺少資源 ID');
       }
       console.log('讀取 Patient ID:', createdPatientId);
-      const patient = await client.getResource<PatientResource>('Patient', createdPatientId);
+      const result = await client.get<PatientResource>('Patient', createdPatientId);
+      const patient = result as PatientResource;
       expect(patient.id).to.equal(createdPatientId);
       expect(patient.resourceType).to.equal('Patient');
       expect(patient.name?.[0].given).to.deep.equal(['John']);
       expect(patient.name?.[0].family).to.equal('Doe');
     });
 
-    it('應該能夠搜索資源', async () => {
+    it('應該能夠使用額外參數獲取資源', async () => {
       if (!createdPatientId) {
         throw new Error('缺少資源 ID');
       }
 
-      const searchParams: Record<string, string> = {
-        _id: createdPatientId
-      };
+      const result = await client.get<PatientResource>('Patient', createdPatientId, {
+        _format: 'json'
+      });
+      const patient = result as PatientResource;
+      expect(Array.isArray(result)).to.be.false;
+      expect(patient.id).to.equal(createdPatientId);
+    });
 
-      const patients = await client.searchResources<PatientResource>('Patient', searchParams);
-      expect(patients).to.be.an('array');
+    it('應該能夠獲取所有資源', async () => {
+      const result = await client.get<PatientResource>('Patient');
+      const patients = result as PatientResource[];
+      expect(Array.isArray(patients)).to.be.true;
       expect(patients.length).to.be.greaterThan(0);
-      expect(patients[0].id).to.equal(createdPatientId);
+      expect(patients[0].resourceType).to.equal('Patient');
     });
 
     it('應該能夠更新資源', async () => {
@@ -115,7 +122,7 @@ describe('FHIRClient', () => {
       };
 
       console.log('更新 Patient ID:', createdPatientId);
-      const patient = await client.updateResource<PatientResource>(updatedPatient);
+      const patient = await client.put<PatientResource>(updatedPatient);
       expect(patient.id).to.equal(createdPatientId);
       expect(patient.name?.[0].given).to.deep.equal(['John', 'William']);
       expect(patient.name?.[0].family).to.equal('Doe');
@@ -127,13 +134,14 @@ describe('FHIRClient', () => {
       }
 
       console.log('刪除 Patient ID:', createdPatientId);
-      await client.deleteResource('Patient', createdPatientId);
+      await client.delete('Patient', createdPatientId);
       
       try {
-        await client.getResource('Patient', createdPatientId);
+        await client.get('Patient', createdPatientId);
         throw new Error('資源應該已被刪除');
       } catch (error: any) {
-        expect(error.response?.status).to.be.oneOf([404, 410]); // Gone 或 Not Found
+        const status = error.response?.status || error.status;
+        expect(status).to.be.oneOf([404, 410]); // Gone 或 Not Found
       }
     });
   });
@@ -143,11 +151,12 @@ describe('FHIRClient', () => {
     
     it('應該正確設置 token', async () => {
       try {
-        const patient = await client.getResource<PatientResource>('Patient', '1');
-        expect(patient).to.be.an('object');
+        const result = await client.get<PatientResource>('Patient', '1');
+        const patient = result as PatientResource;
+        expect(patient.id).to.equal('1');
       } catch (error: any) {
-        // 即使認證失敗，我們只關心請求是否正確發送
-        expect(error.response?.status).to.be.oneOf([401, 403, 404]);
+        const status = error.response?.status || error.status;
+        expect(status).to.be.oneOf([401, 403, 404]);
       }
     });
   });

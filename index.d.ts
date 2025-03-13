@@ -29,35 +29,30 @@ export declare class FHIRClient {
   getVersion(): FHIRVersion;
 
   /**
-   * 通過資源類型和 ID 獲取特定資源
+   * 獲取 FHIR 資源
    * @param resourceType FHIR 資源類型
-   * @param id 資源 ID
+   * @param idOrParams 資源 ID 或搜索參數
+   * @param params 額外的查詢參數（僅在提供 ID 時使用）
+   * @returns 當使用 ID 時返回單一資源，當使用搜索參數時返回資源陣列
    */
-  getResource<T extends FHIRResource>(resourceType: string, id: string): Promise<T>;
-
-  /**
-   * 搜索特定類型的資源
-   * @param resourceType FHIR 資源類型
-   * @param params 搜索參數
-   */
-  searchResources<T extends FHIRResource>(resourceType: string, params?: Record<string, string>): Promise<T[]>;
+  get<T extends FHIRResource>(resourceType: string, idOrParams?: string | Record<string, any>, params?: Record<string, any>): Promise<T | T[]>;
 
   /**
    * 創建新的 FHIR 資源
    * @param resource 要創建的資源
    */
-  createResource<T extends FHIRResource>(resource: T): Promise<T>;
+  post<T extends FHIRResource>(resource: T): Promise<T>;
 
   /**
    * 更新現有的 FHIR 資源
    * @param resource 包含 ID 的資源
    */
-  updateResource<T extends FHIRResource>(resource: T): Promise<T>;
+  put<T extends FHIRResource>(resource: T): Promise<T>;
 
   /**
    * 刪除 FHIR 資源
    * @param resourceType FHIR 資源類型
    * @param id 資源 ID
    */
-  deleteResource(resourceType: string, id: string): Promise<void>;
+  delete(resourceType: string, id: string): Promise<void>;
 } 

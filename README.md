@@ -39,22 +39,19 @@ const client = new FHIRClient({
 #### Get Resource
 
 ```typescript
-const patient = await client.getResource('Patient', 'patient-id');
-```
+const patient = await client.get('Patient', 'patient-id');
 
-#### Search Resources
-
-```typescript
-const patients = await client.searchResources('Patient', {
-  'name': 'John',
-  '_count': '10'
+const patientWithOrg = await client.get('Patient', 'patient-id', {
+  _include: 'patient.managingOrganization'
 });
+
+const patient = await client.get('Patient', { name: 'John' });
 ```
 
 #### Create Resource
 
 ```typescript
-const newPatient = await client.createResource({
+const newPatient = await client.post({
   resourceType: 'Patient',
   name: [{ given: ['John'], family: 'Doe' }]
 });
@@ -63,7 +60,7 @@ const newPatient = await client.createResource({
 #### Update Resource
 
 ```typescript
-const updatedPatient = await client.updateResource({
+const updatedPatient = await client.put({
   resourceType: 'Patient',
   id: 'patient-id',
   name: [{ given: ['John'], family: 'Smith' }]
@@ -73,7 +70,7 @@ const updatedPatient = await client.updateResource({
 #### Delete Resource
 
 ```typescript
-await client.deleteResource('Patient', 'patient-id');
+await client.delete('Patient', 'patient-id');
 ```
 
 ## Contributing

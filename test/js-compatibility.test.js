@@ -27,6 +27,11 @@ describe('JavaScript Compatibility Tests', () => {
     });
   });
 
+  afterAll(async () => {
+    await client.close();
+    
+  });
+
   describe('初始化', () => {
     it('應該正確設定基本參數', () => {
       expect(client.getVersion()).to.equal('R4');
@@ -55,7 +60,7 @@ describe('JavaScript Compatibility Tests', () => {
 
   describe('FHIR 資源操作', () => {
     it('應該能夠創建資源', async () => {
-      const patient = await client.createResource(testPatient);
+      const patient = await client.post(testPatient);
       console.log('創建的 Patient ID:', patient.id);
       expect(patient.id).to.exist;
       expect(patient.resourceType).to.equal('Patient');
@@ -73,7 +78,7 @@ describe('JavaScript Compatibility Tests', () => {
         throw new Error('缺少資源 ID');
       }
       console.log('讀取 Patient ID:', createdPatientId);
-      const patient = await client.getResource('Patient', createdPatientId);
+      const patient = await client.get('Patient', createdPatientId);
       expect(patient.id).to.equal(createdPatientId);
       expect(patient.resourceType).to.equal('Patient');
       expect(patient.name[0].given).to.deep.equal(['John']);
@@ -89,7 +94,7 @@ describe('JavaScript Compatibility Tests', () => {
         _id: createdPatientId
       };
 
-      const patients = await client.searchResources('Patient', searchParams);
+      const patients = await client.get('Patient', searchParams);
       expect(patients).to.be.an('array');
       expect(patients.length).to.be.greaterThan(0);
       expect(patients[0].id).to.equal(createdPatientId);
@@ -112,7 +117,7 @@ describe('JavaScript Compatibility Tests', () => {
       };
 
       console.log('更新 Patient ID:', createdPatientId);
-      const patient = await client.updateResource(updatedPatient);
+      const patient = await client.put(updatedPatient);
       expect(patient.id).to.equal(createdPatientId);
       expect(patient.name[0].given).to.deep.equal(['John', 'William']);
       expect(patient.name[0].family).to.equal('Doe');
@@ -124,13 +129,14 @@ describe('JavaScript Compatibility Tests', () => {
       }
 
       console.log('刪除 Patient ID:', createdPatientId);
-      await client.deleteResource('Patient', createdPatientId);
+      await client.delete('Patient', createdPatientId);
       
       try {
-        await client.getResource('Patient', createdPatientId);
+        await client.get('Patient', createdPatientId);
         throw new Error('資源應該已被刪除');
       } catch (error) {
-        expect(error.response?.status).to.be.oneOf([404, 410]);
+        const status = error.response?.status || error.status;
+        expect(status).to.be.oneOf([404, 410]);
       }
     });
   });
@@ -138,10 +144,11 @@ describe('JavaScript Compatibility Tests', () => {
   describe('認證處理', () => {
     it('應該正確設置 token', async () => {
       try {
-        const patient = await client.getResource('Patient', '1');
+        const patient = await client.get('Patient', '1');
         expect(patient).to.exist;
       } catch (error) {
-        expect(error.response?.status).to.be.oneOf([401, 403, 404]);
+        const status = error.response?.status || error.status;
+        expect(status).to.be.oneOf([401, 403, 404]);
       }
     });
   });
