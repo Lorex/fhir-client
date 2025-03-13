@@ -1,5 +1,10 @@
 # FHIR Client
 
+[![npm version](https://badge.fury.io/js/@fhir-uck%2Ffhir-client.svg)](https://badge.fury.io/js/@fhir-uck%2Ffhir-client)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+[![HitCount](https://hits.dwyl.com/Lorex/@fhir-uck/fhir-client.svg?style=flat-square)](https://hits.dwyl.com/Lorex/@fhir-uck/fhir-client)
+[![NPM](https://nodei.co/npm/@fhir-uck/fhir-client.png?downloads=true&stars=true&compact=true)](https://nodei.co/npm/@fhir-uck/fhir-client/)
+
 A TypeScript client library for interacting with FHIR (Fast Healthcare Interoperability Resources) servers. This library provides a simple and type-safe API for handling FHIR resources.
 
 [繁體中文說明](https://github.com/Lorex/fhir-client/blob/master/README_zh-TW.md)

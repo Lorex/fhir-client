@@ -1,5 +1,11 @@
 # FHIR Client
 
+[![npm version](https://badge.fury.io/js/@fhir-uck%2Ffhir-client.svg)](https://badge.fury.io/js/@fhir-uck%2Ffhir-client)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com) 
+[![HitCount](https://hits.dwyl.com/Lorex/@fhir-uck/fhir-client.svg?style=flat-square)](https://hits.dwyl.com/Lorex/@fhir-uck/fhir-client)
+[![NPM](https://nodei.co/npm/@fhir-uck/fhir-client.png?downloads=true&stars=true&compact=true)](https://nodei.co/npm/@fhir-uck/fhir-client/)
+
+
 這是一個用於與 FHIR 伺服器進行互動的 TypeScript 客戶端函式庫，提供簡單且類型安全的 API 來處理 FHIR 呼叫，並同時支援 TypeScript 與 JavaScript。
 
 ## 功能
